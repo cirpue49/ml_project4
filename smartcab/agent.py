@@ -138,14 +138,18 @@ class LearningAgent(Agent):
         """ The choose_action function is called when the agent is asked to choose
             which action to take, based on the 'state' the smartcab is in. """
 
-        # Set the agent state and default action
-        self.state = state
-        self.next_waypoint = self.planner.next_waypoint()
+        if self.learning == True:
+            # Set the agent state and default action
+            self.state = state
+            self.next_waypoint = self.planner.next_waypoint()
 
-        if random.random() < self.epsilon:
+            if random.random() < self.epsilon:
+                action = random.choice(self.valid_actions)
+            else:
+                action, max_q = self.get_maxQ(self.state)
+
+        else: 
             action = random.choice(self.valid_actions)
-        else:
-            action, max_q = self.get_maxQ(self.state)
         ########### 
         ## TO DO ##
         ###########
@@ -166,13 +170,13 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
-        new_state = self.build_state()          # Get current state
-        self.createQ(new_state)
+        if self.learning == True:
+            new_state = self.build_state()          # Get current state
+            self.createQ(new_state)
 
-        new_action, new_max_q = self.get_maxQ(new_state)
-        # new_max_q = self.Q[new_state][self.planner.next_waypoint()]
-
-        self.Q[state][action] = self.Q[state][action] + self.alpha*(reward  - self.Q[state][action])
+            new_action, new_max_q = self.get_maxQ(new_state)
+            
+            self.Q[state][action] = self.Q[state][action] + self.alpha*(reward  - self.Q[state][action])
 
 
 
