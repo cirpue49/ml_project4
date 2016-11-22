@@ -68,18 +68,16 @@ class LearningAgent(Agent):
         # When learning, check if the state is in the Q-table
         #   If it is not, create a dictionary in the Q-table for the current 'state'
         #   For each action, set the Q-value for the state-action pair to 0
-        input_list = [ (k, v) for  k, v in inputs.iteritems()]
-        if input_list[3][1] != None:
-            left = (input_list[3][0], True)
-        else:
-            left = (input_list[3][0], False)
-        if input_list[2][1] != None:
-            right = (input_list[2][0], True)
-        else:
-            right = (input_list[2][0], False)
-        input_tuple = tuple(input_list[0])+left+right
+        if inputs['left'] != None:
+            inputs['left'] = True
+        if inputs['right'] != None:
+            inputs['right'] = True
+        if inputs['oncoming'] != None:
+            inputs['oncoming'] = True
+
+        # input_tuple = tuple(input_list[0])+left+right
         # state = self.env.agent_states[self]['location'] + self.env.agent_states[self]['heading'] + input_tuple
-        state = input_tuple+tuple(waypoint)
+        state = tuple(inputs.values())+tuple(waypoint)
 
 
         return state
